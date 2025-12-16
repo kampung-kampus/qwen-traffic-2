@@ -5,7 +5,8 @@
      5	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
      6	    <title>Johor-Singapore Live Traffic Cameras</title>
      7	    <link rel="stylesheet" href="styles.css">
-      //style
+      
+      <style>
 
       1	* {
      2	    margin: 0;
@@ -302,6 +303,244 @@
    293	        width: 100%;
    294	    }
    295	}
+
+    
+       /*style for heatmap*/
+
+        249	    font-size: 1.3rem;
+   250	}
+   251	
+   252	/* Heatmap Styles */
+   253	.heatmap-container {
+   254	    display: flex;
+   255	    flex-wrap: wrap;
+   256	    gap: 2rem;
+   257	    margin-top: 2rem;
+   258	}
+   259	
+   260	.map-placeholder {
+   261	    flex: 1;
+   262	    min-width: 300px;
+   263	    height: 500px;
+   264	    background: linear-gradient(45deg, #e6f3ff, #cce6ff);
+   265	    border-radius: 10px;
+   266	    position: relative;
+   267	    overflow: hidden;
+   268	    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   269	    border: 1px solid #b3d9ff;
+   270	}
+   271	
+   272	.road-network {
+   273	    position: absolute;
+   274	    top: 0;
+   275	    left: 0;
+   276	    width: 100%;
+   277	    height: 100%;
+   278	    display: flex;
+   279	    flex-direction: column;
+   280	    justify-content: center;
+   281	    align-items: center;
+   282	    padding: 20px;
+   283	}
+   284	
+   285	.road {
+   286	    width: 80%;
+   287	    height: 20px;
+   288	    margin: 10px 0;
+   289	    border-radius: 10px;
+   290	    position: relative;
+   291	    display: flex;
+   292	    align-items: center;
+   293	    justify-content: center;
+   294	}
+   295	
+   296	.road-causeway {
+   297	    width: 90%;
+   298	    background: linear-gradient(to right, #90EE90, #90EE90);
+   299	    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+   300	}
+   301	
+   302	.road-second-link {
+   303	    width: 85%;
+   304	    background: linear-gradient(to right, #ADFF2F, #ADFF2F);
+   305	    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+   306	}
+   307	
+   308	.road-highway {
+   309	    width: 95%;
+   310	    background: linear-gradient(to right, #FFA07A, #FFA07A);
+   311	    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+   312	}
+   313	
+   314	.road-jb-pontian {
+   315	    width: 80%;
+   316	    background: linear-gradient(to right, #F0E68C, #F0E68C);
+   317	    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+   318	}
+   319	
+   320	.road-name {
+   321	    position: absolute;
+   322	    left: 10px;
+   323	    color: #333;
+   324	    font-weight: bold;
+   325	    font-size: 0.9rem;
+   326	    background: rgba(255, 255, 255, 0.7);
+   327	    padding: 2px 6px;
+   328	    border-radius: 4px;
+   329	}
+   330	
+   331	.traffic-load-indicator {
+   332	    position: absolute;
+   333	    right: 10px;
+   334	    width: 15px;
+   335	    height: 15px;
+   336	    border-radius: 50%;
+   337	    background-color: #4CAF50; /* Default green for light traffic */
+   338	}
+   339	
+   340	.road[data-traffic="moderate"] .traffic-load-indicator {
+   341	    background-color: #FFC107; /* Yellow for moderate traffic */
+   342	}
+   343	
+   344	.road[data-traffic="heavy"] .traffic-load-indicator {
+   345	    background-color: #F44336; /* Red for heavy traffic */
+   346	}
+   347	
+   348	.heatmap-overlay {
+   349	    position: absolute;
+   350	    top: 0;
+   351	    left: 0;
+   352	    width: 100%;
+   353	    height: 100%;
+   354	    pointer-events: none;
+   355	}
+   356	
+   357	#trafficHeatmapCanvas {
+   358	    width: 100%;
+   359	    height: 100%;
+   360	}
+   361	
+   362	.heatmap-controls {
+   363	    width: 300px;
+   364	    display: flex;
+   365	    flex-direction: column;
+   366	    gap: 1.5rem;
+   367	}
+   368	
+   369	.legend {
+   370	    background: white;
+   371	    padding: 1.5rem;
+   372	    border-radius: 10px;
+   373	    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   374	}
+   375	
+   376	.legend h4 {
+   377	    margin-top: 0;
+   378	    margin-bottom: 1rem;
+   379	    color: #1e3c72;
+   380	    text-align: center;
+   381	}
+   382	
+   383	.legend-item {
+   384	    display: flex;
+   385	    align-items: center;
+   386	    margin-bottom: 0.8rem;
+   387	}
+   388	
+   389	.legend-color {
+   390	    width: 20px;
+   391	    height: 20px;
+   392	    border-radius: 4px;
+   393	    margin-right: 10px;
+   394	}
+   395	
+   396	.light-traffic {
+   397	    background-color: #90EE90; /* Light green */
+   398	}
+   399	
+   400	.moderate-traffic {
+   401	    background-color: #FFA500; /* Orange */
+   402	}
+   403	
+   404	.heavy-traffic {
+   405	    background-color: #FF4500; /* Orange-red */
+   406	}
+   407	
+   408	.heatmap-stats {
+   409	    background: white;
+   410	    padding: 1.5rem;
+   411	    border-radius: 10px;
+   412	    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   413	}
+   414	
+   415	.heatmap-stats h4 {
+   416	    margin-top: 0;
+   417	    margin-bottom: 1rem;
+   418	    color: #1e3c72;
+   419	    text-align: center;
+   420	}
+   421	
+   422	/* Footer */
+   423	footer {
+   424	    background: #333;
+   425	    color: white;
+   426	    text-align: center;
+   427	    padding: 2rem 0;
+   428	    margin-top: 2rem;
+   429	}
+   430	
+   431	footer p {
+   432	    margin: 0.5rem 0;
+   433	}
+   434	
+   435	/* Responsive Design */
+   436	@media (max-width: 768px) {
+   437	    header h1 {
+   438	     font-size: 2rem;
+   439	    }
+   440	    
+   441	    nav ul {
+   442	        flex-direction: column;
+   443	        align-items: center;
+   444	    }
+   445	    
+   446	    nav li {
+   447	        margin: 5px 0;
+   448	        width: 100%;
+   449	        text-align: center;
+   450	    }
+   451	    
+   452	    .camera-grid {
+   453	        grid-template-columns: 1fr;
+   454	    }
+   455	    
+   456	    .traffic-stats {
+   457	        flex-direction: column;
+   458	        align-items: center;
+   459	        gap: 1.5rem;
+   460	    }
+   461	    
+   462	    .stat-item {
+   463	        width: 100%;
+   464	    }
+   465	    
+   466	    .heatmap-container {
+   467	        flex-direction: column;
+   468	    }
+   469	    
+   470	    .map-placeholder {
+   471	        height: 400px;
+   472	        width: 100%;
+   473	    }
+   474	    
+   475	    .heatmap-controls {
+   476	        width: 100%;
+   477	    }
+   478	}
+       
+       
+
+        </style>
       
      8	</head>
      9	<body>
@@ -434,6 +673,71 @@
    136	                </div>
    137	            </div>
    138	        </section>
+
+      <section id="heatmap" class="checkpoint-section">
+   142	            <h2>Singapore Causeways Traffic Heatmap</h2>
+   143	            <div class="heatmap-container">
+   144	                <div class="map-placeholder">
+   145	                    <div class="road-network">
+   146	                        <!-- Major roads in the causeways area -->
+   147	                        <div class="road road-causeway" data-traffic="moderate">
+   148	                            <div class="road-name">Causeway (Woodlands)</div>
+   149	                            <div class="traffic-load-indicator"></div>
+   150	                        </div>
+   151	                        <div class="road road-second-link" data-traffic="light">
+   152	                            <div class="road-name">Second Link (Tuas)</div>
+   153	                            <div class="traffic-load-indicator"></div>
+   154	                        </div>
+   155	                        <div class="road road-highway" data-traffic="heavy">
+   156	                            <div class="road-name">AYE/JE</div>
+   157	                            <div class="traffic-load-indicator"></div>
+   158	                        </div>
+   159	                        <div class="road road-jb-pontian" data-traffic="moderate">
+   160	                            <div class="road-name">Johor Bahru-Pontian</div>
+   161	                            <div class="traffic-load-indicator"></div>
+   162	                        </div>
+   163	                    </div>
+   164	                    <div class="heatmap-overlay">
+   165	                        <canvas id="trafficHeatmapCanvas"></canvas>
+   166	                    </div>
+   167	                </div>
+   168	                
+   169	                <div class="heatmap-controls">
+   170	                    <div class="legend">
+   171	                        <h4>Traffic Load Legend</h4>
+   172	                        <div class="legend-item">
+   173	                            <div class="legend-color light-traffic"></div>
+   174	                            <span>Light Traffic</span>
+   175	                        </div>
+   176	                        <div class="legend-item">
+   177	                            <div class="legend-color moderate-traffic"></div>
+   178	                            <span>Moderate Traffic</span>
+   179	                        </div>
+   180	                        <div class="legend-item">
+   181	                            <div class="legend-color heavy-traffic"></div>
+   182	                            <span>Heavy Traffic</span>
+   183	                        </div>
+   184	                    </div>
+   185	                    
+   186	                    <div class="heatmap-stats">
+   187	                        <h4>Current Traffic Conditions</h4>
+   188	                        <div class="stat-item">
+   189	                            <span class="stat-label">Busiest Route:</span>
+   190	                            <span class="stat-value">AYE/JE</span>
+   191	                        </div>
+   192	                        <div class="stat-item">
+   193	                            <span class="stat-label">Average Speed:</span>
+   194	                            <span class="stat-value">25 km/h</span>
+   195	                        </div>
+   196	                        <div class="stat-item">
+   197	                            <span class="stat-label">Congestion Level:</span>
+   198	                            <span class="stat-value">Moderate</span>
+   199	                        </div>
+   200	                    </div>
+   201	                </div>
+   202	            </div>
+   203	        </section>
+   204	
    139	
    140	        <section class="info-panel">
    141	            <h3>Traffic Information</h3>
@@ -462,5 +766,320 @@
    164	    </footer>
    165	
    166	    <script src="script.js"></script>
+      <script>
+
+       1	// Traffic camera website functionality
+     2	
+     3	document.addEventListener('DOMContentLoaded', function() {
+     4	    // Navigation functionality
+     5	    const navLinks = document.querySelectorAll('nav a');
+     6	    const sections = document.querySelectorAll('.checkpoint-section');
+     7	    
+     8	    // Add click event listeners to navigation links
+     9	    navLinks.forEach(link => {
+    10	        link.addEventListener('click', function(e) {
+    11	            e.preventDefault();
+    12	            
+    13	            // Remove active class from all links and sections
+    14	            navLinks.forEach(l => l.classList.remove('active'));
+    15	            sections.forEach(section => section.classList.remove('active'));
+    16	            
+    17	            // Add active class to clicked link
+    18	            this.classList.add('active');
+    19	            
+    20	            // Show corresponding section
+    21	            const targetSection = document.querySelector(this.getAttribute('href'));
+    22	            if (targetSection) {
+    23	                targetSection.classList.add('active');
+      // If the heatmap section was selected, initialize the canvas
+    26	                if (targetSection.id === 'heatmap') {
+    27	                    initHeatmapCanvas();
+    28	                }
+     
+    24	            }
+    25	        });
+    26	    });
+    27	    
+    28	    // Set up live updating for traffic cameras
+    29	    setInterval(updateCameras, 30000); // Update every 30 seconds
+    30	    
+    31	    // Initialize countdown timer
+    32	    startCountdownTimer();
+    33	    
+    34	    // Simulate random traffic status updates
+    35	    setInterval(updateTrafficStatus, 10000); // Update traffic status every 10 seconds
+
+       
+    42	    // Initialize heatmap functionality
+    43	    initHeatmapFunctionality();
+    36	});
+    37	
+
+       // Initialize heatmap functionality
+    47	function initHeatmapFunctionality() {
+    48	    // Set up the initial heatmap
+    49	    updateRoadTrafficIndicators();
+    50	    
+    51	    // Update heatmap periodically
+    52	    setInterval(updateHeatmapData, 15000); // Update every 15 seconds
+    53	}
+    54	
+    55	// Update road traffic indicators based on data-traffic attribute
+    56	function updateRoadTrafficIndicators() {
+    57	    const roads = document.querySelectorAll('.road');
+    58	    
+    59	    roads.forEach(road => {
+    60	        const trafficLevel = road.getAttribute('data-traffic');
+    61	        const indicator = road.querySelector('.traffic-load-indicator');
+    62	        
+    63	        if (indicator) {
+    64	            // Update indicator color based on traffic level
+    65	            if (trafficLevel === 'light') {
+    66	                indicator.style.backgroundColor = '#4CAF50'; // Green
+    67	            } else if (trafficLevel === 'moderate') {
+    68	                indicator.style.backgroundColor = '#FFC107'; // Yellow
+    69	            } else if (trafficLevel === 'heavy') {
+    70	                indicator.style.backgroundColor = '#F44336'; // Red
+    71	            }
+    72	        }
+    73	    });
+    74	}
+    75	
+    76	// Update heatmap data periodically
+    77	function updateHeatmapData( ) {
+    78	    // In a real implementation, this would fetch data from a traffic API
+    79	    console.log('Updating heatmap data...');
+    80	    
+    81	    // Update the map visualization
+    82	    updateMapVisualization();
+    83	    
+    84	    // Update statistics
+    85	    updateHeatmapStats();
+    86	    
+    87	    // Update road traffic indicators with new simulated data
+    88	    updateRoadsWithRandomData();
+    89	}
+    90	
+    91	// Update the map visualization with dynamic elements
+    92	function updateMapVisualization() {
+    93	    const canvas = document.getElementById('trafficHeatmapCanvas');
+    94	    if (!canvas) return;
+    95	    
+    96	    // Get the canvas context
+    97	    const ctx = canvas.getContext('2d');
+    98	    const container = canvas.parentElement.parentElement; // .map-placeholder
+    99	    
+   100	    // Set canvas dimensions to match container
+   101	    canvas.width = container.clientWidth;
+   102	    canvas.height = container.clientHeight;
+   103	    
+   104	    // Clear the canvas
+   105	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   106	    
+   107	    // Draw dynamic heatmap overlay
+   108	    drawDynamicHeatmap(ctx, canvas.width, canvas.height);
+   109	}
+   110	
+   111	// Draw dynamic heatmap on the canvas
+   112	function drawDynamicHeatmap(ctx, width, height) {
+   113	    // Create radial gradient for heatmap effect
+   114	    const gradient = ctx.createRadialGradient(
+   115	        width * 0.7, height * 0.3, 10,
+   116	        width * 0.7, height * 0.3, width * 0.4
+   117	    );
+   118	    
+   119	    // Add color stops for heatmap effect
+   120	    gradient.addColorStop(0, 'rgba(0, 255, 0, 0.6)');    // Green (light traffic)
+   121	    gradient.addColorStop(0.5, 'rgba(255, 255, 0, 0.5)'); // Yellow (moderate traffic)
+   122	    gradient.addColorStop(1, 'rgba(255, 0, 0, 0.4)');    // Red (heavy traffic)
+   123	    
+   124	    // Draw the gradient
+   125	    ctx.fillStyle = gradient;
+   126	    ctx.fillRect(0, 0, width, height);
+   127	    
+   128	    // Add some animated dots representing traffic flow
+   129	    drawTrafficFlow(ctx, width, height);
+   130	}
+   131	
+   132	// Draw animated traffic flow dots
+   133	function drawTrafficFlow(ctx, width, height) {
+   134	    // Draw some animated dots to represent moving traffic
+   135	    const time = Date.now() / 1000; // Time in seconds
+   136	    
+   137	    // Draw horizontal flow (left to right)
+   138	    for (let i = 0; i < 20; i++) {
+   139	        const x = (time * 20 + i * 30) % (width + 30);
+   140	        const y = height * 0.4 + Math.sin(time + i) * 10;
+   141	        const size = 3 + Math.sin(time + i) * 2;
+   142	        
+   143	        // Determine color based on traffic density at that point
+   144	        const colorValue = Math.floor(100 + 100 * Math.sin(time + i));
+   145	        ctx.fillStyle = `rgba(${colorValue}, ${255 - colorValue}, 0, 0.7)`;
+   146	        ctx.beginPath();
+   147	        ctx.arc(x, y, size, 0, Math.PI * 2);
+   148	        ctx.fill();
+   149	    }
+   150	    
+   151	    // Draw vertical flow (top to bottom)
+   152	    for (let i = 0; i < 15; i++) {
+   153	        const x = width * 0.6 + Math.cos(time + i) * 10;
+   154	        const y = (time * 15 + i * 40) % (height + 40);
+   155	        const size = 2 + Math.cos(time + i) * 1.5;
+   156	        
+   157	        // Determine color based on traffic density at that point
+   158	        const colorValue = Math.floor(100 + 100 * Math.cos(time + i));
+   159	        ctx.fillStyle = `rgba(${255 - colorValue}, ${colorValue}, 0, 0.6)`;
+   160	        ctx.beginPath();
+   161	        ctx.arc(x, y, size, 0, Math.PI * 2);
+   162	        ctx.fill();
+   163	    }
+   164	}
+   165	
+   166	// Initialize the heatmap canvas
+   167	function initHeatmapCanvas() {
+   168	    const canvas = document.getElementById('trafficHeatmapCanvas');
+   169	    if (!canvas) return;
+   170	    
+   171	    // Set up canvas resize handler
+   172	    function resizeCanvas() {
+   173	        const container = canvas.parentElement.parentElement; // .map-placeholder
+   174	        canvas.width = container.clientWidth;
+   175	        canvas.height = container.clientHeight;
+   176	        
+   177	        // Redraw the visualization
+   178	        const ctx = canvas.getContext('2d');
+   179	        drawDynamicHeatmap(ctx, canvas.width, canvas.height);
+   180	    }
+   181	    
+   182	    // Initial resize
+   183	    resizeCanvas();
+   184	    
+   185	    // Add resize listener
+   186	    window.addEventListener('resize', resizeCanvas);
+   187	}
+   188	
+   189	// Update heatmap statistics
+   190	function updateHeatmapStats() {
+   191	    // In a real implementation, this would fetch actual data
+   192	    // For demo, we'll simulate changing values
+   193	    const avgSpeedElement = document.querySelector('.heatmap-stats .stat-value:nth-child(2)');
+   194	    const congestionElement = document.querySelector('.heatmap-stats .stat-value:nth-child(4)');
+   195	    
+   196	    // Generate random values for demo
+   197	    const avgSpeed = Math.floor(Math.random() * 30) + 15; // Between 15-45 km/h
+   198	    const congestionLevels = ['Light', 'Moderate', 'Heavy'];
+   199	    const congestion = congestionLevels[Math.floor(Math.random() * congestionLevels.length)];
+   200	    
+   201	    if (avgSpeedElement) {
+   202	        avgSpeedElement.textContent = `${avgSpeed} km/h`;
+   203	    }
+   204	    
+   205	    if (congestionElement) {
+   206	        congestionElement.textContent = congestion;
+   207	    }
+   208	}
+   209	
+   210	// Update roads with random traffic data for demonstration
+   211	function updateRoadsWithRandomData() {
+   212	    const roads = document.querySelectorAll('.road');
+   213	    
+   214	    roads.forEach(road => {
+   215	        // Randomly select a traffic level
+   216	        const trafficLevels = ['light', 'moderate', 'heavy'];
+   217	        const randomLevel = trafficLevels[Math.floor(Math.random() * trafficLevels.length)];
+   218	        
+   219	        // Update the data attribute
+   220	        road.setAttribute('data-traffic', randomLevel);
+   221	    });
+   222	    
+   223	    // Update the visual indicators
+   224	    updateRoadTrafficIndicators();
+   225	}
+   226	
+    38	function updateCameras() {
+    39	    // In a real implementation, this would fetch new images from traffic cameras
+    40	    console.log('Updating traffic camera feeds...');
+    41	    
+    42	    // Update "last updated" timestamps
+    43	    const lastUpdatedElements = document.querySelectorAll('.last-updated');
+    44	    lastUpdatedElements.forEach(element => {
+    45	        element.textContent = 'Last updated: Just now';
+    46	    });
+    47	    
+    48	    // For demonstration, we're just updating the timestamp
+    49	    // In a real implementation, you would refresh the image sources
+    50	}
+    51	
+    52	function startCountdownTimer() {
+    53	    let seconds = 30;
+    54	    const timerElement = document.querySelector('.countdown-timer');
+    55	    
+    56	    function updateTimer() {
+    57	        seconds--;
+    58	        if (seconds < 0) {
+    59	            seconds = 30; // Reset to 30 seconds
+    60	            updateCameras(); // Trigger camera update
+    61	        }
+    62	        
+    63	        timerElement.textContent = `${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`;
+    64	        setTimeout(updateTimer, 1000);
+    65	    }
+    66	    
+    67	    updateTimer();
+    68	}
+    69	
+    70	function updateTrafficStatus() {
+    71	    // Randomly update traffic status indicators for demonstration
+    72	    const statusIndicators = document.querySelectorAll('.status-indicator');
+    73	    const statusInfo = document.querySelectorAll('.traffic-status');
+    74	    
+    75	    statusIndicators.forEach((indicator, index) => {
+    76	        // Randomly assign a status (green, yellow, red) for demo purposes
+    77	        const statuses = ['green', 'yellow', 'red'];
+    78	        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+    79	        
+    80	        // Remove existing status classes
+    81	        indicator.className = 'status-indicator';
+    82	        
+    83	        // Add new status class
+    84	        indicator.classList.add(randomStatus);
+    85	        
+    86	        // Update corresponding text status
+    87	        if (statusInfo[index]) {
+    88	            let statusText = '';
+    89	            let textColor = '';
+    90	            
+    91	            switch(randomStatus) {
+    92	                case 'green':
+    93	                    statusText = 'Traffic: Light';
+    94	                    textColor = '#4CAF50';
+    95	                    break;
+    96	                case 'yellow':
+    97	                    statusText = 'Traffic: Moderate';
+    98	                    textColor = '#FFC107';
+    99	                    break;
+   100	                case 'red':
+   101	                    statusText = 'Traffic: Heavy';
+   102	                    textColor = '#F44336';
+   103	                    break;
+   104	            }
+   105	            statusInfo[index].textContent = statusText;
+   106	            statusInfo[index].style.color = textColor;
+   107	        }
+   108	    });
+   109	}
+   110	
+   111	// Auto-refresh functionality
+   112	function autoRefreshPage() {
+   113	    // Refresh the page every hour (3600000 milliseconds)
+   114	    setTimeout(() => {
+   115	        window.location.reload();
+   116	    }, 3600000);
+   117	}
+   118	
+   119	// Start auto-refresh
+   120	autoRefreshPage();
+      </script>
+      
    167	</body>
    168	</html>
