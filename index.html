@@ -777,28 +777,7 @@
    165	
    166	    <script src="script.js"></script>
 
-       <script>
-async function updateCamera2701() {
-  try {
-    const response = await fetch('https://api.data.gov.sg/v1/transport/traffic-images');
-    const data = await response.json();
-    const cameras = data.items[0].cameras;
-    const camera = cameras.find(cam => cam.camera_id === "2701");
-
-    if (camera) {
-      document.getElementById("camera2701").src = camera.image;
-      document.querySelector("#woodlands .last-updated").textContent = 
-        "Last updated: " + new Date(camera.timestamp).toLocaleTimeString();
-    }
-  } catch (error) {
-    console.error("Error fetching camera 2701:", error);
-  }
-}
-
-// Run once and refresh every 60 seconds
-updateCamera2701();
-setInterval(updateCamera2701, 10000);
-        </script>
+       
       <script>
 
        1	// Traffic camera website functionality
@@ -1114,9 +1093,6 @@ setInterval(updateCamera2701, 10000);
    120	autoRefreshPage();
       </script>
    </script>
-        <script>
          
-        </script>
-      
    167	</body>
    168	</html>
